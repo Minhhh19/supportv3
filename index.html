@@ -106,30 +106,6 @@
   #fields { display: none; }
   #fields.show { display: block; }
 
-  #gate {
-    position: fixed;
-    inset: 0;
-    background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999;
-    padding: 16px;
-  }
-  #gate .box {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 28px 24px;
-    width: 100%;
-    max-width: 320px;
-    text-align: center;
-  }
-  #gate .box p { font-size: 13px; color: var(--muted); margin: 6px 0 16px; }
-  #gate input { text-align: center; }
-  #gate .err { color: #dc2626; font-size: 12px; margin-top: 8px; display: none; }
-  #app { display: none; }
-
   @media (max-width: 480px) {
     body { padding: 20px 10px; }
     .card { padding: 16px; }
@@ -139,17 +115,6 @@
 </head>
 <body>
 
-<div id="gate">
-  <div class="box">
-    <h1 style="margin-bottom:4px;">🔒 Nhập mật khẩu</h1>
-    <p>Trang này chỉ dành riêng cho bạn.</p>
-    <input type="password" id="gatePass" placeholder="Mật khẩu" autofocus>
-    <button class="btn" id="gateBtn">Mở khóa</button>
-    <div class="err" id="gateErr">Sai mật khẩu, thử lại.</div>
-  </div>
-</div>
-
-<div id="app">
 <div class="wrap">
   <h1>Công cụ tra cứu Shipping</h1>
   <p class="sub">Chọn mục cần hỗ trợ → điền thông tin → công cụ mở link kết quả trong tab mới.</p>
@@ -177,43 +142,6 @@
     <div class="preview" id="preview" style="display:none"></div>
   </div>
 </div>
-</div>
-
-<script>
-  var GATE_HASH = "8768086146c9b929e3e8faea148dd0d625426acd85f7f093bad40aa5a749f442";
-
-  async function sha256(text) {
-    var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-    return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
-  }
-
-  function unlockApp() {
-    document.getElementById("gate").style.display = "none";
-    document.getElementById("app").style.display = "block";
-  }
-
-  if (sessionStorage.getItem("shippingToolUnlocked") === "1") {
-    unlockApp();
-  }
-
-  var gatePass = document.getElementById("gatePass");
-  var gateBtn = document.getElementById("gateBtn");
-  var gateErr = document.getElementById("gateErr");
-
-  async function tryUnlock() {
-    var hash = await sha256(gatePass.value);
-    if (hash === GATE_HASH) {
-      sessionStorage.setItem("shippingToolUnlocked", "1");
-      unlockApp();
-    } else {
-      gateErr.style.display = "block";
-      gatePass.value = "";
-      gatePass.focus();
-    }
-  }
-  gateBtn.addEventListener("click", tryUnlock);
-  gatePass.addEventListener("keydown", function (e) { if (e.key === "Enter") tryUnlock(); });
-</script>
 
 <script>
   var ITEMS = [
@@ -254,10 +182,10 @@
     {
       id: 5,
       title: "5. Get webhook",
-      desc: "Lấy thông tin webhook theo ID",
+      desc: "Lấy thông tin webhook theo FF ID",
       path: "/admin/shipping/supports/webhook/{id}.json",
       params: [
-        { key: "id", label: "Webhook ID", placeholder: "vd: 172053976", inPath: true }
+        { key: "id", label: "FF ID", placeholder: "vd: 172053976", inPath: true }
       ]
     }
   ];
